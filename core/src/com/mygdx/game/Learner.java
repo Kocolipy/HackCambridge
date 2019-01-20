@@ -28,16 +28,6 @@ public class Learner {
         //System.out.println("Truth conf " + confidence/(tries-numTimesLied));
         return ((double) score)/tries;
     }
-    private static double bestPathAccuracyG(Node current, AI ai, int tries, int correct){
-        int gScore = 0;
-        for (int i =0;i < tries; i++) {
-            ai.gaussianPredict(current, current.getNeighbours());
-            if (ai.recommendedPath.getId() == correct) {
-                gScore++;
-            }
-        }
-        return ((double) gScore)/tries;
-    }
     private static double[] mapEvaluate(Graph map, AI ai, int tries){
         double[] accuracies = new double[10];
 
@@ -71,27 +61,37 @@ public class Learner {
     }
 
     public static void main(String[] args){
-        double[] variables = new double[]{1.0, 0.2, 0.05};
-
-        AI ai = new AI(0.2, variables);
         Graph g;
         Node current;
+/*
+        double score = 0;
+        for (int gen =0; gen<100; gen++){
+            g = new Graph();
+            g.run();
 
-        /*
-        g = new Graph();
-        g.run();
-        double[] accuracies = mapEvaluate(g, ai, 10000);
-        for (int i = 0;i < 10; i++){
-            System.out.println("loc: " + i + ", " + accuracies[i]);
-        }*/
+            double[] variables = new double[]{1.5, 0.4, 0.05};
+            AI ai1 = new AI(0, variables);
+            double[] accuracies1 = mapEvaluate(g, ai1, 1000);
+
+            variables = new double[]{1.5, 0.4, 0};
+            AI ai2 = new AI(0, variables);
+            double[] accuracies2 = mapEvaluate(g, ai2, 1000);
 
 
+            for (int i = 0;i < 10; i++){
+                score += accuracies1[i] - accuracies2[i];
+            }
+        }
+        System.out.println(score);
+*/
+
+/*
         for (int i=0;i<5;i++){
             g = new Graph();
             g.run();
             current = g.getNode(3);
-            System.out.println(bestPathAccuracy(current, ai, 1, 5));
+            System.out.println(bestPathAccuracy(current, ai, 1000, 5));
         }
-
+*/
     }
 }
