@@ -28,6 +28,16 @@ public class Learner {
         //System.out.println("Truth conf " + confidence/(tries-numTimesLied));
         return ((double) score)/tries;
     }
+    private static double bestPathAccuracyG(Node current, AI ai, int tries, int correct){
+        int gScore = 0;
+        for (int i =0;i < tries; i++) {
+            ai.gaussianPredict(current, current.getNeighbours());
+            if (ai.recommendedPath.getId() == correct) {
+                gScore++;
+            }
+        }
+        return ((double) gScore)/tries;
+    }
     private static double[] mapEvaluate(Graph map, AI ai, int tries){
         double[] accuracies = new double[10];
 
@@ -43,7 +53,7 @@ public class Learner {
         correctPaths.put(9,8);
 
         Deque<Node> queue = new LinkedList<Node>();
-        queue.add(map.getNodes(0));
+        queue.add(map.getNode(0));
         while(!queue.isEmpty()){
             Node first = queue.remove();
             if (accuracies[first.getId()] == 0) {
@@ -67,20 +77,21 @@ public class Learner {
         Graph g;
         Node current;
 
+        /*
         g = new Graph();
         g.run();
         double[] accuracies = mapEvaluate(g, ai, 10000);
         for (int i = 0;i < 10; i++){
             System.out.println("loc: " + i + ", " + accuracies[i]);
-        }
+        }*/
 
-/*
+
         for (int i=0;i<5;i++){
             g = new Graph();
             g.run();
-            current = g.getNodes(4);
-            System.out.println(bestPathAccuracy(current, ai, 10000, 0));
+            current = g.getNode(3);
+            System.out.println(bestPathAccuracy(current, ai, 1, 5));
         }
-*/
+
     }
 }

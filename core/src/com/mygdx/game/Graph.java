@@ -87,7 +87,7 @@ public class Graph
     System.out.println(a.getRecommendedPath().getId());
   }
 
-  public Node getNodes(int id){
+  public Node getNode(int id){
     return map.get(id);
   }
 

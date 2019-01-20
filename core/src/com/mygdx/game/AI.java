@@ -34,6 +34,91 @@ public class AI {
     }
     public Node getRecommendedPath(){  return recommendedPath;   }
     public double getProbability(){ return confidence;   }
+    private double newObservation(double currentMean, Node node){
+        double lum = currentMean+5;
+        GaussianVertex initial = new GaussianVertex(lum, Math.sqrt(lum/2));
+        GaussianVertex v = new GaussianVertex(initial, Math.sqrt(lum/2));
+        double obser = node.getLuminosity();
+        v.observe(obser);
+
+        BayesianNetwork bayesNet = new BayesianNetwork(initial.getConnectedGraph());
+        Optimizer optimizer = KeanuOptimizer.of(bayesNet);
+        optimizer.maxAPosteriori();
+
+        return initial.getValue().scalar();
+    }
+    public void gaussianPredict(Node current, ArrayList<Node> paths){
+        lie = false;
+
+        for (int i=0; i<paths.size();i++){
+            if (deadends.contains(paths.get(i))){
+                paths.remove(i);
+            }
+        }
+        if (paths.size() == 1){
+            deadends.add(current);
+            recommendedPath = paths.get(0);
+            confidence = 100;
+            return;
+        }
+
+        double[] scores = new double[paths.size()];
+        double currentLumin = current.getLuminosity();
+        double currentHumidity = current.getHumidity();
+        double currentTemp = current.getTemperature();
+        double min = Double.POSITIVE_INFINITY;
+
+        for (int i=0;i<paths.size();i++){
+            double tmp;
+            double calculated;
+
+            calculated = newObservation(currentLumin, paths.get(i));
+            tmp = calculated-currentLumin;
+            scores[i] += tmp*Math.abs(tmp)*heurisitics[0];
+
+            calculated = paths.get(i).getHumidity();
+            tmp = calculated-currentHumidity;
+            scores[i] += tmp*Math.abs(tmp)*heurisitics[1];
+
+            calculated = paths.get(i).getTemperature();
+            tmp = calculated-currentTemp;
+            scores[i] += tmp*Math.abs(tmp)*heurisitics[2];
+
+            min = Math.min(min, scores[i]);
+        }
+
+        double best = 0;
+        int bestPath = 0;
+        double sum = 0;
+        if (min < 0){
+            for (int i=0; i< scores.length; i++){
+                scores[i] -= min*1.2;
+            }
+        }
+        for (int i =0 ;i<scores.length;i++) {
+            if (best < scores[i]) {
+                best = scores[i];
+                bestPath = i;
+            }
+            sum += scores[i];
+        }
+        confidence =(best/sum)*100;
+
+        if (random() < lyingProb){
+            lie = true;
+            scores[bestPath] = 0;
+            sum -= best;
+            best = 0;
+            for (int i =0 ;i<scores.length;i++) {
+                if (best < scores[i]) {
+                    best = scores[i];
+                    bestPath = i;
+                }
+            }
+            confidence = (best/sum)*70;
+        }
+        recommendedPath = paths.get(bestPath);
+    }
     public void predict(Node current, ArrayList<Node> paths){
         lie = false;
 
@@ -58,6 +143,7 @@ public class AI {
         for (int i=0;i<paths.size();i++){
             double tmp;
             double calculated;
+
             calculated = paths.get(i).getLuminosity();
             tmp = calculated-currentLumin;
             scores[i] += tmp*Math.abs(tmp)*heurisitics[0];
