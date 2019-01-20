@@ -32,7 +32,7 @@ public class StartScreen implements Screen {
         table.setFillParent(true);
         table.setDebug(true);
         stage.addActor(table);
-        Skin skin  = new Skin(Gdx.files.internal("core\\assets\\skin\\glassy-ui.json"));
+        Skin skin  = new Skin(Gdx.files.internal("core\\assets\\skin\\glassy\\skin\\glassy-ui.json"));
         TextButton startBtn = new TextButton("New Game", skin);
         TextButton exit = new TextButton("Exit", skin);
 

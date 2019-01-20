@@ -13,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 public class EndScreen implements Screen {
     private Game g;
     private Stage stage;
-    public EndScreen(Game game){
+    GameController gameController;
+    public EndScreen(Game game, GameController gameController){
         this.g = game;
+        this.gameController = gameController;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         //TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("core\\assets\\skin\\glassy-ui.atlas"));
-        Skin skin  = new Skin(Gdx.files.internal("core\\assets\\skin\\glassy-ui.json"));
+        Skin skin  = new Skin(Gdx.files.internal("core\\assets\\skin\\glassy\\skin\\glassy-ui.json"));
 
         TextButton startBtn = new TextButton("Click here to start", skin);
         startBtn.setPosition(300, 300);

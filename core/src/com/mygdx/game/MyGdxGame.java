@@ -17,6 +17,7 @@ public class MyGdxGame extends Game {
 	public final static int GAME = 1;
 	public final static int END = 2;
 	public OrthographicCamera camera;
+	public GameController gameController;
 
 	private StartScreen startScreen;
 	private GameScreen gameScreen;
@@ -29,6 +30,7 @@ public class MyGdxGame extends Game {
 		font = new BitmapFont();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 480, 720);
+		gameController = new GameController();
 		this.setScreen(new StartScreen(this));
 
 	}
@@ -56,11 +58,11 @@ public class MyGdxGame extends Game {
 				this.setScreen(startScreen);
 				break;
 			case GAME:
-				if(gameScreen == null) gameScreen = new GameScreen(this); // added (this)
+				if(gameScreen == null) gameScreen = new GameScreen(this, gameController); // added (this)
 				this.setScreen(gameScreen);
 				break;
 			case END:
-				if(endScreen == null) endScreen = new EndScreen(this); //added (this)
+				if(endScreen == null) endScreen = new EndScreen(this, gameController); //added (this)
 				this.setScreen(endScreen);
 				break;
 		}

@@ -8,10 +8,10 @@ public class GameController {
 	int playerPosition;
 	int exitPosition;
 	Graph g;
-	AI bot1;
-	AI bot2;
-	AI bot3;
-	AI bot4;
+	public AI bot1;;
+	public AI bot2;;
+	public AI bot3;;
+	public AI bot4;
 	Node recommendation1;
 	Node recommendation2;
 	Node recommendation3;
@@ -52,6 +52,7 @@ public class GameController {
 			// deadend
 			return;
 		}
+
 		bot1.predict(g.getNode(playerPosition), g.getNode(playerPosition).getNeighbours());
 		recommendation1 = bot1.getRecommendedPath();
 		confidence1 = bot1.getProbability();
@@ -70,6 +71,8 @@ public class GameController {
 		confidence4 = bot4.getProbability();
 		
 	}
+
+
 	//AI.predict(...)
 	//AI.getRecommendedPath(); returns node that is recommended
 	//AI.getProbability(); confidence interval
