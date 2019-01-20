@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 
 // import Graph class and Node class
@@ -8,32 +10,47 @@ public class GameController {
 	int playerPosition;
 	int exitPosition;
 	Graph g;
-	public AI bot1;;
-	public AI bot2;;
-	public AI bot3;;
-	public AI bot4;
-	Node recommendation1;
-	Node recommendation2;
-	Node recommendation3;
-	Node recommendation4;
-	double confidence1;
-	double confidence2;
-	double confidence3;
-	double confidence4;
+	int health;
+	boolean isDead;
+
+	private AI truth;
+	public AI[] bots = new AI[4];
 	
 	public GameController() {
+		boolean isDead = false;
 		this.exitPosition = 0;
-		this.playerPosition = 9;
-		
 		// generate graph and map
 		this.g = new Graph();
 		g.run();
-		
-		this.bot1 = new AI(0.0);
-		this.bot2 = new AI(0.2);
-		this.bot3 = new AI(0.4);
-		this.bot4 = new AI(0.6);
-		
+		this.playerPosition = new Random().nextInt(31-25+1) + 25;
+		this.health = 26;
+
+		double[] probabilities = randomiseTruthTeller();
+
+		// check which one is the truth teller
+		for(int i = 0;i<probabilities.length;i++) {
+			bots[i] = new AI(probabilities[i]);
+			if(probabilities[i] < 0.001){
+				System.out.println("Truth "+ i);
+				truth = bots[i];
+			}
+		}
+
+		update(g.getNode(this.playerPosition));
+	}
+	private double[] randomiseTruthTeller() {
+		double[] d = new double[] {0.0, 0.5, 0.5, 0.5};
+		for (int i = d.length - 1; i > 0; --i) {
+			int j = new Random().nextInt(i + 1);
+			double temp = d[i];
+			d[i] = d[j];
+			d[j] = temp;
+		}
+		return d;
+	}
+	public int decrementHealth(){
+		health--;
+		return health;
 	}
 	public boolean isExitNode() {
 		if(playerPosition == exitPosition) {
@@ -42,37 +59,29 @@ public class GameController {
 			return false;
 		}
 	}
+	public  boolean isDeadEnd(){
+		return g.getNode(playerPosition).getNeighbours().size() == 1;
+	}
 	public void update(Node chosenNode) {
 		this.playerPosition = chosenNode.getId();
-		if(isExitNode()) {
-			// win the game
+		if (isExitNode()) {
 			return;
 		}
-		if(g.getNode(playerPosition).getNeighbours().size() == 1) {
-			// deadend
+		decrementHealth();
+		if (health<= 0){
+			isDead = true;
 			return;
+		}
+		Node current = g.getNode(playerPosition);
+		ArrayList<Node> neighbours = g.getNode(playerPosition).getNeighbours();
+
+		for (int i = 0; i < 4; i++) {
+			bots[i].predict(current, neighbours);
+			System.out.println("Bat " + i + " recommends " + bots[i].getRecommendedPath().getId() + " with confidence: " + bots[i].getProbability());
 		}
 
-		bot1.predict(g.getNode(playerPosition), g.getNode(playerPosition).getNeighbours());
-		recommendation1 = bot1.getRecommendedPath();
-		confidence1 = bot1.getProbability();
-		//recommendation1.getId();
-		
-		bot2.predict(g.getNode(playerPosition), g.getNode(playerPosition).getNeighbours());
-		recommendation2 = bot2.getRecommendedPath();
-		confidence2 = bot2.getProbability();
-		
-		bot3.predict(g.getNode(playerPosition), g.getNode(playerPosition).getNeighbours());
-		recommendation3 = bot3.getRecommendedPath();
-		confidence3 = bot3.getProbability();
-		
-		bot4.predict(g.getNode(playerPosition), g.getNode(playerPosition).getNeighbours());
-		recommendation4 = bot4.getRecommendedPath();
-		confidence4 = bot4.getProbability();
-		
+
 	}
-
-
 	//AI.predict(...)
 	//AI.getRecommendedPath(); returns node that is recommended
 	//AI.getProbability(); confidence interval

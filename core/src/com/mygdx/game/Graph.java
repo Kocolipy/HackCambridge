@@ -34,19 +34,59 @@ public class Graph
       adj[second][first] = 1;
     }
     */
-    total_nodes = 10;
+    total_nodes = 41;
     adj = new int[total_nodes][total_nodes];
-    addEdge(0,4);
+    // Layer 1
     addEdge(0,1);
-    addEdge(0,5);
     addEdge(1,2);
-    addEdge(1,4);
-    addEdge(2,3);
-    addEdge(5,3);
+    addEdge(1,3);
+    addEdge(1,37);
+
+    // Layer 2
+    addEdge(2,39);
+    addEdge(5,38);
+    addEdge(3,40);
+    addEdge(2,4);
+    addEdge(3,5);
     addEdge(3,6);
-    addEdge(6,7);
-    addEdge(3,8);
-    addEdge(8,9);
+    addEdge(6,12);
+    addEdge(6,11);
+    addEdge(6,9);
+    addEdge(4,8);
+    addEdge(4,7);
+    addEdge(8,5);
+    addEdge(5,10);
+
+    // Layer 3
+    addEdge(20,36);
+    addEdge(10,15);
+    addEdge(9,20);
+    addEdge(7,13);
+    addEdge(13,14);
+    addEdge(15,16);
+    addEdge(15,17);
+    addEdge(15,18);
+    addEdge(17,19);
+    addEdge(18,21);
+
+    // Layer 4
+    addEdge(21,35);
+    addEdge(23,32);
+    addEdge(21,22);
+    addEdge(22,23);
+    addEdge(23,26);
+    addEdge(26,31);
+    addEdge(26,27);
+    addEdge(26,28);
+    addEdge(23,24);
+    addEdge(24,25);
+
+    // Layer 5
+    addEdge(27,33);
+    addEdge(29,34);
+    addEdge(27,29);
+    addEdge(28,30);
+    addEdge(29,30);
 
 
     // generating nodes
@@ -138,15 +178,15 @@ class Node
   }
   public void setLuminosity(double lum){
     this.luminosity_mu = lum;
-    this.luminosity_sigma = Math.sqrt(lum/2);
+    this.luminosity_sigma = Math.sqrt(Math.abs(lum)/2);
   }
   public void setHumidity(double hum){
     this.humidity_mu = hum;
-    this.humidity_sigma = Math.sqrt(hum/4);
+    this.humidity_sigma = Math.sqrt(Math.abs(hum)/4);
   }
   public void setTemperature(double temp){
     this.temperature_mu = temp;
-    this.temperature_sigma = Math.sqrt(temp/8);
+    this.temperature_sigma = Math.sqrt(Math.abs(temp)/8);
   }
 
   public ArrayList<Node> getNeighbours(){

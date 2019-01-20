@@ -31,6 +31,10 @@ public class GameScreen implements Screen {
     TextButton button2;
     TextButton button3;
     TextButton button4;
+    TextButton healthButton;
+    TextButton locationButton;
+    Image background;
+
 
     String mText;
     HashMap<TextButton, AI> AIList = new HashMap<TextButton, AI>();
@@ -43,6 +47,10 @@ public class GameScreen implements Screen {
     private String deadEndImg = "core\\assets\\Pictures\\deadendscreen.png";
     private String escapeImg = "core\\assets\\Pictures\\winscreen.png";
 
+    TextureRegionDrawable deadendTexture = new TextureRegionDrawable(new TextureRegion(new Texture(deadEndImg)));
+    TextureRegionDrawable mainTexture = new TextureRegionDrawable(new TextureRegion(new Texture(mainImg)));
+    TextureRegionDrawable escapeTexture = new TextureRegionDrawable(new TextureRegion(new Texture(escapeImg)));
+
     private String bluebat = "core\\assets\\Pictures\\bluebat.png";
     private String yellowbat = "core\\assets\\Pictures\\yellowbat.png";
     private String pinkbat = "core\\assets\\Pictures\\pinkbat.png";
@@ -50,7 +58,7 @@ public class GameScreen implements Screen {
 
     private String helloText = "These four bats seem like they want to help guide me out of the forest, but they are all pointing in different directions. Which bat should I trust?";
     private String okayText = "I followed my chosen bat until we hit another crossroads. Should I continue following the same bat?";
-    private String deadEndText = "I followed my chosen bat until we hit an impassable terrain. This does not look good.";
+    private String deadEndText = "I arrived at an impassable terrain. This does not look good.";
     private String escapeText = "I followed my chosen bat until we saw a piercing light through the trees. Excited, I ran forward. In the horizon I could see my city’s glittering skyline. Escape!";
 
 
@@ -72,7 +80,7 @@ public class GameScreen implements Screen {
         } else {
             backg = new Texture(Gdx.files.internal(deadEndImg));
         }
-        Image background = new Image(backg);
+        background = new Image(backg);
         background.setSize(stage.getWidth(), stage.getHeight() * 0.8f);
         background.setPosition(Gdx.graphics.getWidth()/35, Gdx.graphics.getHeight()/4.5f);
         //background.setAlign(Align.top);
@@ -87,56 +95,80 @@ public class GameScreen implements Screen {
         table.setHeight(stage.getHeight()*0.2f);
 
         Skin skin = new Skin(Gdx.files.internal("core\\assets\\skin\\plain-james\\skin\\plain-james-ui.json"));
-
+        BitmapFont font = new BitmapFont();
 
         Drawable blueDrawable = new TextureRegionDrawable(new Texture(Gdx.files.internal(bluebat)));
-        Button.ButtonStyle blueButtonStyle = new Button.ButtonStyle(blueDrawable, blueDrawable, blueDrawable);
-        Button button1 = new Button(blueButtonStyle);
+        TextButton.TextButtonStyle blueButtonStyle = new TextButton.TextButtonStyle(blueDrawable, blueDrawable, blueDrawable, font);
+        final TextButton button1 = new TextButton("", blueButtonStyle);
+        AIList.put(button1, gameController.bots[0]);
+        button1.getLabelCell().padTop(10);
+        button1.getLabelCell().padLeft(10);
+        button1.getLabelCell().padRight(10);
+        button1.getLabel().setWrap(true);
 
         Drawable yellowDrawable = new TextureRegionDrawable(new Texture(Gdx.files.internal(yellowbat)));
-        Button.ButtonStyle yellowButtonStyle = new Button.ButtonStyle(yellowDrawable, yellowDrawable, yellowDrawable);
-        Button button2 = new Button(yellowButtonStyle);
+        TextButton.TextButtonStyle yellowButtonStyle = new TextButton.TextButtonStyle(yellowDrawable, yellowDrawable, yellowDrawable, font);
+        final TextButton button2 = new TextButton("", yellowButtonStyle);
+        AIList.put(button2, gameController.bots[1]);
+        button2.getLabelCell().padTop(10);
+        button2.getLabelCell().padLeft(10);
+        button2.getLabelCell().padRight(10);
+        button2.getLabel().setWrap(true);
 
         Drawable pinkDrawable = new TextureRegionDrawable(new Texture(Gdx.files.internal(pinkbat)));
-        Button.ButtonStyle pinkButtonStyle = new Button.ButtonStyle(pinkDrawable, pinkDrawable, pinkDrawable);
-        Button button3 = new Button(pinkButtonStyle);
+        TextButton.TextButtonStyle pinkButtonStyle = new TextButton.TextButtonStyle(pinkDrawable, pinkDrawable, pinkDrawable, font);
+        final TextButton button3 = new TextButton("", pinkButtonStyle);
+        AIList.put(button3, gameController.bots[2]);
+        button3.getLabelCell().padTop(10);
+        button3.getLabelCell().padLeft(10);
+        button3.getLabelCell().padRight(10);
+        button3.getLabel().setWrap(true);
 
         Drawable greenDrawable = new TextureRegionDrawable(new Texture(Gdx.files.internal(greenbat)));
-        Button.ButtonStyle greenButtonStyle = new Button.ButtonStyle(greenDrawable, greenDrawable, greenDrawable);
-        Button button4 = new Button(greenButtonStyle);
+        TextButton.TextButtonStyle greenButtonStyle = new TextButton.TextButtonStyle(greenDrawable, greenDrawable, greenDrawable, font);
+        final TextButton button4 = new TextButton("", greenButtonStyle);
+        AIList.put(button4, gameController.bots[3]);
+        button4.getLabelCell().padTop(10);
+        button4.getLabelCell().padLeft(10);
+        button4.getLabelCell().padRight(10);
+        button4.getLabel().setWrap(true);
 
         button1.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event,float x, float y){
-                System.out.println("Pressed");
-                mText = "Button Pressed!";
-
-                batch.begin();
-                font.draw(batch, mText, 30, (int) (stage.getHeight() * 0.2) + 20, stage.getWidth() - 20, 10, true);
-                batch.end();
+                update(button1);
             }
         });
 
         button2.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event,float x, float y){
-
+                update(button2);
             }
         });
 
         button3.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event,float x, float y){
-
+                update(button3);
             }
         });
 
         button4.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event,float x, float y){
-
+                update(button4);
             }
         });
+
+        healthButton = new TextButton("100",skin);
+        healthButton.setPosition(stage.getWidth()*0.9f, stage.getHeight()*0.9f);
+        stage.addActor(healthButton);
+
+        locationButton = new TextButton("Location: XX",skin);
+        locationButton.setPosition(stage.getWidth()*0.0f, stage.getHeight()*0.9f);
+        stage.addActor(locationButton);
+
 
         table.add(button1).width(Value.percentWidth(.25F, table)).height(Value.percentHeight(1F, table));
         table.add(button2).width(Value.percentWidth(.25F, table)).height(Value.percentHeight(1F, table));
@@ -148,10 +180,14 @@ public class GameScreen implements Screen {
 //        button3.getLabel().setFontScale(0.5f, 1.0f);
 //        button4.getLabel().setFontScale(0.5f, 1.0f);
         stage.addActor(table);
+        updateText();
     }
     public void update(TextButton buttonPassed){
         AI ai = AIList.get(buttonPassed);
         gameController.update(ai.getRecommendedPath());
+        updateText();
+    }
+    public void updateText(){
         for(TextButton button : AIList.keySet()){
             AI ai_t = AIList.get(button);
             double conf = ai_t.getProbability();
@@ -165,8 +201,31 @@ public class GameScreen implements Screen {
             } else {
                 batTexts = "I definitely know where to go! Follow me!";
             }
+            if (gameController.isExitNode()){
+                batTexts = "We are out!";
+            }
+            if (gameController.isDead || gameController.isExitNode()){
+                ai_t.recommendedPath = null;
+            }
             button.setText(batTexts);
         }
+        healthButton.setText(String.valueOf(gameController.health));
+        locationButton.setText("Location: " + String.valueOf(gameController.playerPosition));
+        if (gameController.isExitNode()){
+            state = 1;
+            background.setDrawable(escapeTexture);
+        }
+        else if (gameController.isDeadEnd()){
+            background.setDrawable(deadendTexture);
+            state = -1;
+        }else if (gameController.isDead){
+            state = 3;
+        } else {
+            background.setDrawable(mainTexture);
+            state = 0;
+        }
+
+
     }
     @Override
     public void render(float delta) {
@@ -184,10 +243,12 @@ public class GameScreen implements Screen {
             mText = okayText;
         } else if (state == 1) {
             mText = escapeText;
+        } else if (state == 3) {
+            mText = "We wandered away for too long and starved";
         } else {
             mText = deadEndText;
         }
-        font.draw(batch, mText, 10, (int) (stage.getHeight() * 0.2) + 20, stage.getWidth() - 20, 10, true);
+        font.draw(batch, mText, 10, (int) (stage.getHeight() * 0.2) + 50, stage.getWidth() - 20, 10, true);
 
         batch.end();
     }
