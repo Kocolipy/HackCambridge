@@ -20,7 +20,7 @@ public class AI {
     private double lyingProb;
     public Node recommendedPath;
     public double confidence;
-    private double[] heurisitics = new double[]{1.0, 0.5, 0.1};
+    private double[] heurisitics = new double[]{1.0, 0.2, 0.05};
     private HashSet<Node> deadends = new HashSet<Node>();
     public boolean lie = false;
 
@@ -28,22 +28,25 @@ public class AI {
         lyingProb = lyingProbability;
         heurisitics = heur;
     }
+
+    public AI (double lyingProbability){
+        lyingProb = lyingProbability;
+    }
     public Node getRecommendedPath(){  return recommendedPath;   }
     public double getProbability(){ return confidence;   }
-
     public void predict(Node current, ArrayList<Node> paths){
         lie = false;
-        if (paths.size() == 1){
-            deadends.add(current);
-            recommendedPath = paths.get(0);
-            confidence = 100;
-            return;
-        }
 
         for (int i=0; i<paths.size();i++){
             if (deadends.contains(paths.get(i))){
                 paths.remove(i);
             }
+        }
+        if (paths.size() == 1){
+            deadends.add(current);
+            recommendedPath = paths.get(0);
+            confidence = 100;
+            return;
         }
 
         double[] scores = new double[paths.size()];

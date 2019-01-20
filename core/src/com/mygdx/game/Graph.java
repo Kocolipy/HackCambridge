@@ -40,6 +40,7 @@ public class Graph
     addEdge(0,1);
     addEdge(0,5);
     addEdge(1,2);
+    addEdge(1,4);
     addEdge(2,3);
     addEdge(5,3);
     addEdge(3,6);
@@ -79,17 +80,15 @@ public class Graph
     Graph g = new Graph();
     g.run();
 
-    AI a = new AI(0, new double[]{1.0, 0.5, 0.1});
-    Node current = map.get(3);
+    AI a = new AI(0.1);
+    Node current = map.get(8);
     a.predict(current, current.getNeighbours());
-
     System.out.println(a.getProbability());
     System.out.println(a.getRecommendedPath().getId());
-
   }
 
-  public HashMap<Integer,Node> getNodes(){
-    return map;
+  public Node getNodes(int id){
+    return map.get(id);
   }
 
   public static void bfs(int total_nodes, int start, double initial_lum, double initial_hum, double temperature){
